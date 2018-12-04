@@ -1,4 +1,4 @@
-1.  Run download_abide_preproc.py
+1.	Run download_abide_preproc.py
 	Use:
 	nohup python download_abide_preproc.py -d func_preproc -p cpac -s filt_global -o <Storage_location>
 	
@@ -20,7 +20,7 @@
 
 10.	Run create_eigen.py to produce eigenvalues(stored in both CSV and hdf5) and eigenvectors(stored in hdf5)
 
-11. Run create_PSM.py to produce PSMs(including matrices)(including summed PSM), stored in CSV and hdf5
+11.	Run create_PSM.py to produce PSMs(including matrices)(including summed PSM), stored in CSV and hdf5
 	Note: numOfPSMs is a parameter in create_PSM.py that can be changed to choose how many PSMs to save.
 	
 
