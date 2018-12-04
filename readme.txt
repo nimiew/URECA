@@ -1,3 +1,5 @@
+0.	After downloading the original phenotype csv file, run edit_pheno_filenames.py to edit it
+
 1.	Run download_abide_preproc.py
 	Use:
 	nohup python download_abide_preproc.py -d func_preproc -p cpac -s filt_global -o <Storage_location>
