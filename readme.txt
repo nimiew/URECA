@@ -12,7 +12,7 @@
 
 6.	Compare results with other models, by running SVM.py
 
-7.	With the best values of parameters, run save_model.py to save the model
+7.	With the best values of parameters, run save_ffn_model.py to save the model
 
 8.	Run create_SSM.py to produce SSM(including matrix), stored in both CSV and hdf5 formats
 
@@ -22,5 +22,12 @@
 
 11.	Run new_PSM.py to generate tables for important eigenvectors.
 	
+12. Test_model.py is used to find scores for deep learning models.
+ 
+13. DAE1000.py is used to train first autoencoder of 1000 units.
 
+14. DAE600.py is used to train second autoencoder of 600 units.
 
+15. DAE_1000_600_2.py is used to finetune the autoencoder.
+
+16. DAE_1000_600_2_freeze.py is used to finetune the autoencoder, but with the autoencoder weights frozen.	
