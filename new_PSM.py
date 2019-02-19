@@ -44,17 +44,17 @@ with h5py.File('/data/jang047/eigenvectors.hdf5', 'r') as g:
     eigenvectors = g['eigenvectors']
     eigenvectors = np.array(eigenvectors)
 
-table = np.zeros([len(testX), 3])
-q = q.reshape((-1,))
+q = q.reshape((-1,)) #Reshape into 1d so we can place in table
 
 for i in range(num_Of_PSMs):
-        table = np.zeros([len(testX), 3])
-        v = eigenvectors[:,i]
-        for j in range(len(testX)):
-                xv= np.dot(testX[j].T, v)
-                table[j][0] = xv
-        table[:,1] = q
-        table[:,2] = table[:,0] * table[:,1]
+        table = np.zeros([len(testX), 3]) #Create table where number of rows = number of samples and 3 columns for vx, q, vx*q
+        v = eigenvectors[:,i] #Each column is eigenvector
+        for j in range(len(testX)): #For each sample
+                xv= np.dot(testX[j].T, v) #Dot product sample with eigenvector
+                table[j][0] = xv #Store in table
+	#At this point, first column of table is done
+        table[:,1] = q #Transfer q to second column of table
+        table[:,2] = table[:,0] * table[:,1] #Broadcasting to do element wise multiplication between column 1 and 2 to get the last column
         table = pd.DataFrame(table)
         table.to_csv('table_'+str(i)+'.csv')
 
