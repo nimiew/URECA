@@ -14,4 +14,4 @@ for i in range(len(mylist)):
     if full_dict.get(mylist[i][:-10]) == 1:
         shutil.move(mylist[i], "Autistic/")
     elif full_dict.get(mylist[i][:-10]) == 2:
-        shutil.move(mylist[i], "Control/")
+        shutil.move(mylist[i], "Normal/")

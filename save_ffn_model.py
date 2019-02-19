@@ -9,10 +9,10 @@ from sklearn.model_selection import train_test_split
 from keras.models import model_from_json
 import os
 
-X = np.load("X.npy") #(823, 34716)
+X = np.load("X_old.npy")
 X = np.nan_to_num(X)
-Y = np.load("Y.npy") #(823,)
-Y = np.array([Y, -(Y-1)]).T #(823, 2) one-hot
+Y = np.load("Y_old.npy")
+Y = np.array([Y, -(Y-1)]).T
 
 seed = 10
 tf.set_random_seed(seed)
@@ -22,7 +22,7 @@ np.random.seed(seed)
 num_features = 34716
 learning_rate = 0.0001
 batch_size = 64
-epochs = 3129
+epochs = 5000
 test_percentage = 0.20
 num_hidden_l1 = [400]
 num_hidden_l2 = [400]
@@ -33,7 +33,7 @@ dropout_rate_l3 = 0.5
 l2_regularization = 0.00001
 early_stopping_count = 300
 
-result = [[],[],[],[],[],[],[],[]]
+trainX, testX, trainY, testY = train_test_split(X, Y, test_size=test_percentage, stratify=Y)
 
 for i in range(len(num_hidden_l1)):
     for j in range(len(num_hidden_l2)):
@@ -52,14 +52,7 @@ for i in range(len(num_hidden_l1)):
             model.compile(optimizer = optimizer,
                           loss='categorical_crossentropy',
                           metrics=['categorical_accuracy'])
-                         
-            resu = model.fit(X, Y, batch_size=batch_size, epochs=epochs)
+            callbacks = [tf.keras.callbacks.ModelCheckpoint("ffn_old.h5", monitor='val_categorical_accuracy', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)]
+            model.fit(trainX, trainY, batch_size=batch_size, epochs=epochs, validation_data=(testX, testY), verbose=1, callbacks=callbacks)
 
-#Serialize model to JSON
-model_json = model.to_json()
-with open("model.json", "w") as json_file:
-    json_file.write(model_json)
-#Serialize weights to HDF5
-model.save_weights("model.h5")
-print("Saved model to disk")
 

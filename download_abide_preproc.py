@@ -1,8 +1,7 @@
 # download_abide_preproc.py
 #
 # Author: Daniel Clark, 2015
-"""Editted to use local copy of csv file, which has fixed filenames"""
-"""commented out fd related parts"""
+
 '''
 This script downloads data from the Preprocessed Connetomes Project's
 ABIDE Preprocessed data release and stores the files in a local
@@ -58,10 +57,8 @@ def collect_and_download(derivative, pipeline, strategy, out_dir,
     mean_fd_thresh = 0.2
     s3_prefix = 'https://s3.amazonaws.com/fcp-indi/data/Projects/'\
                 'ABIDE_Initiative'
-    #s3_pheno_path = '/'.join([s3_prefix, 'Phenotypic_V1_0b_preprocessed1.csv'])
-    #USE LOCAL COPY INSTEAD
-    s3_pheno_path = 'Phenotypic_V1_0b_preprocessed1_fixed_filenames.csv'
-    
+    s3_pheno_path = '/'.join([s3_prefix, 'Phenotypic_V1_0b_preprocessed1.csv'])
+
     # Format input arguments to be lower case, if not already
     derivative = derivative.lower()
     pipeline = pipeline.lower()
@@ -75,7 +72,7 @@ def collect_and_download(derivative, pipeline, strategy, out_dir,
 
     # If output path doesn't exist, create it
     if not os.path.exists(out_dir):
-        print ('Could not find %s, creating now...' % out_dir)
+        print 'Could not find %s, creating now...' % out_dir
         os.makedirs(out_dir)
 
     # Load the phenotype file from S3
@@ -97,7 +94,7 @@ def collect_and_download(derivative, pipeline, strategy, out_dir,
         raise Exception(err_msg)
 
     # Go through pheno file and build download paths
-    print ('Collecting images of interest...')
+    print 'Collecting images of interest...'
     s3_paths = []
     for pheno_row in pheno_list[1:]:
 
@@ -111,18 +108,18 @@ def collect_and_download(derivative, pipeline, strategy, out_dir,
             row_site = cs_row[site_idx]
             row_age = float(cs_row[age_idx])
             row_sex = cs_row[sex_idx]
-            #row_mean_fd = float(cs_row[mean_fd_idx])
+            row_mean_fd = float(cs_row[mean_fd_idx])
         except Exception as exc:
             err_msg = 'Error extracting info from phenotypic file, skipping...'
-            print (err_msg)
+            print err_msg
             continue
 
         # If the filename isn't specified, skip
-        if row_file_id == 'no_filename': #THERE SHOULDN'T BE ANYMORE 'no_filename'
+        if row_file_id == 'no_filename':
             continue
         # If mean fd is too large, skip
-        #if row_mean_fd >= mean_fd_thresh: #COMMENTED THIS LINE OUT, WE DOWNLOAD ALL SAMPLES REGARDLESS OF NOISE
-        #    continue
+        if row_mean_fd >= mean_fd_thresh:
+            continue
 
         # Test phenotypic criteria (three if's looks cleaner than one long if)
         # Test sex
@@ -136,7 +133,7 @@ def collect_and_download(derivative, pipeline, strategy, out_dir,
             filename = row_file_id + '_' + derivative + extension
             s3_path = '/'.join([s3_prefix, 'Outputs', pipeline, strategy,
                                    derivative, filename])
-            print ('Adding %s to download queue...' % s3_path)
+            print 'Adding %s to download queue...' % s3_path
             s3_paths.append(s3_path)
         else:
             continue
@@ -151,18 +148,18 @@ def collect_and_download(derivative, pipeline, strategy, out_dir,
             os.makedirs(download_dir)
         try:
             if not os.path.exists(download_file):
-                print ('Retrieving: %s' % download_file)
+                print 'Retrieving: %s' % download_file
                 urllib.urlretrieve(s3_path, download_file)
-                print ('%.3f%% percent complete' % \
-                      (100*(float(path_idx+1)/total_num_files)))
+                print '%.3f%% percent complete' % \
+                      (100*(float(path_idx+1)/total_num_files))
             else:
-                print ('File %s already exists, skipping...' % download_file)
+                print 'File %s already exists, skipping...' % download_file
         except Exception as exc:
-            print ('There was a problem downloading %s.\n'\
-                  'Check input arguments and try again.' % s3_path)
+            print 'There was a problem downloading %s.\n'\
+                  'Check input arguments and try again.' % s3_path
 
     # Print all done
-    print ('Done!')
+    print 'Done!'
 
 
 # Make module executable
@@ -216,33 +213,33 @@ if __name__ == '__main__':
     # Try and init optional arguments
     try:
         less_than = args.less_than[0]
-        print ('Using upper age threshold of %d...' % less_than)
+        print 'Using upper age threshold of %d...' % less_than
     except TypeError as exc:
         less_than = 200.0
-        print ('No upper age threshold specified')
+        print 'No upper age threshold specified'
     try:
         greater_than = args.greater_than[0]
-        print ('Using lower age threshold of %d...' % less_than)
+        print 'Using lower age threshold of %d...' % less_than
     except TypeError as exc:
         greater_than = -1.0
-        print ('No lower age threshold specified')
+        print 'No lower age threshold specified'
     try:
         site = args.site[0]
     except TypeError as exc:
         site = None
-        print ('No site specified, using all sites...')
+        print 'No site specified, using all sites...'
     try:
         sex = args.sex[0].upper()
         if sex == 'M':
-            print ('Downloading only male subjects...')
+            print 'Downloading only male subjects...'
         elif sex == 'F':
-            print ('Downloading only female subjects...')
+            print 'Downloading only female subjects...'
         else:
-            print ('Please specify \'M\' or \'F\' for sex and try again')
+            print 'Please specify \'M\' or \'F\' for sex and try again'
             sys.exit()
     except TypeError as exc:
         sex = None
-        print ('No sex specified, using all sexes...')
+        print 'No sex specified, using all sexes...'
 
     # Call the collect and download routine
     collect_and_download(derivative, pipeline, strategy,out_dir,
