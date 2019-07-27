@@ -1,4 +1,5 @@
 *
 !*.py
+!*.md
 !Phenotypic_V1_0b_preprocessed1.csv
 !PowerVoxMNI.txt
